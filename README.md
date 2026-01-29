@@ -1,10 +1,12 @@
-# 🚀 TeamSync: The Future of Secure & Intelligent Communication
+# 🚀 Talkative: The Future of Secure & Intelligent Communication
 
-![TeamSync Banner](https://img.shields.io/badge/Status-Complete-success?style=for-the-badge&logo=github)
+![Talkative Banner](https://img.shields.io/badge/Status-Complete-success?style=for-the-badge&logo=github)
 ![Tech Stack](https://img.shields.io/badge/Stack-MERN%20+%20Socket.io%20+%20Redis-blue?style=for-the-badge)
 ![Security](https://img.shields.io/badge/Security-E2EE%20(RSA%20+%20AES)-red?style=for-the-badge)
 
-**TeamSync** is a high-performance, privacy-first communication platform that bridges the gap between traditional real-time messaging and modern AI-driven collaboration. Built with a focus on scalability and security, it ensures your data remains yours while providing intelligent tools to boost productivity.
+ **Talkative** is a high-performance, privacy-first communication platform that bridges the gap between traditional real-time messaging and modern AI-driven collaboration. Built with a focus on scalability and security, it ensures your data remains yours while providing intelligent tools to boost productivity.
+ 
+ 🌐 **Live Demo:** [https://talkative.com ](https://talkative-3ndq.onrender.com/)
 
 ---
 
@@ -49,19 +51,122 @@
 
 ## 🏗️ Architecture Overview
 
-TeamSync is designed as a **Stateless Backend** system. By offloading session data and global state to Redis, the application can be horizontally scaled infinitely without losing user status or breaking WebSocket connections.
+ Talkative is designed as a **Stateless Backend** system. By offloading session data and global state to Redis, the application can be horizontally scaled infinitely without losing user status or breaking WebSocket connections.
 
 ```mermaid
-graph TD
-    UserA[User A - Frontend] <-->|Socket.io| LB[Load Balancer]
-    LB <--> S1[Server Instance 1]
-    LB <--> S2[Server Instance 2]
-    S1 <--> Redis[(Redis Pub/Sub)]
-    S2 <--> Redis
-    UserB[User B - Frontend] <-->|Socket.io| S2
-    S1 <--> DB[(MongoDB)]
-    S1 <--> AI[Groq / Llama 3]
-    S1 <--> Cloud[Cloudinary]
+flowchart TD
+    %% Title
+    subgraph "Secure Real-Time Communication Platform"
+        direction LR
+        
+        %% ===== USER SIDE =====
+        subgraph "Client Layer"
+            direction TB
+            
+            subgraph "User A Browser"
+                UA1[UI: Compose<br/>Message/Call/AI Query]
+                UA2[WebSocket Client]
+                UA3[Encryption Engine<br/>Web Crypto API]
+                UA4[Local Key Storage<br/>IndexedDB]
+                
+                UA1 --> UA2
+                UA2 --> UA3
+                UA3 --> UA4
+            end
+            
+            subgraph "User B Browser"
+                UB1[UI: Display<br/>Messages/Calls]
+                UB2[WebSocket Client]
+                UB3[Decryption Engine<br/>Web Crypto API]
+                UB4[Local Key Storage<br/>IndexedDB]
+                
+                UB2 --> UB3
+                UB3 --> UB4
+                UB1 --> UB2
+            end
+        end
+
+        %% ===== COMMUNICATION FLOW =====
+        UA3 -- "① Encrypt with Recipient's<br/>Public Key" --> UA2
+        UA2 -- "② Send Encrypted<br/>via WebSocket (wss://)" --> WS1
+        
+        WS1 -- "③ Broadcast via<br/>Redis Pub/Sub" --> Redis
+        Redis -- "④ Push to Recipient" --> WS1
+        WS1 -- "⑤ Deliver Encrypted<br/>Message" --> UB2
+        
+        UB2 -- "⑥ Decrypt with<br/>Local Private Key" --> UB3
+        UB3 --> UB1
+        
+        %% ===== BACKEND CORE =====
+        subgraph "Backend Layer"
+            direction TB
+            
+            WS1[WebSocket Gateway<br/>Socket.io Server]
+            API1[API Server<br/>Express.js]
+            
+            WS1 <--> API1
+        end
+        
+        subgraph "Real-time Layer"
+            Redis[Redis Cloud<br/>Pub/Sub & Presence]
+        end
+        
+        %% ===== DATA STORAGE =====
+        subgraph "Data Storage Layer"
+            direction TB
+            
+            subgraph "Primary Database"
+                MongoDB[MongoDB Atlas<br/>• Messages<br/>• Contacts<br/>• Encrypted Data]
+            end
+            
+            subgraph "Media Storage"
+                Cloudinary[Cloudinary<br/>• Images<br/>• Voice Messages<br/>• Video Clips]
+            end
+            
+            subgraph "Key Management"
+                KeyRegistry[Public Key Registry<br/>User Public Keys]
+            end
+        end
+        
+        %% ===== AI INTEGRATION =====
+        subgraph "AI Service Layer"
+            AI1[AI Service<br/>Groq LLM Integration]
+        end
+        
+        %% ===== CONNECTIONS =====
+        API1 -- "Store Message Metadata" --> MongoDB
+        API1 -- "Upload/Retrieve Media" --> Cloudinary
+        API1 -- "Lookup Public Keys" --> KeyRegistry
+        
+        API1 -- "Process AI Queries" --> AI1
+        AI1 -- "Return Encrypted AI Response" --> API1
+        API1 -- "Route AI Response" --> WS1
+        
+        %% ===== STATUS TRACKING =====
+        WS1 -- "Update Online Status" --> Redis
+        Redis -- "Presence Updates<br/>to All Users" --> WS1
+    end
+
+    %% ===== LEGEND =====
+    subgraph " "
+        direction LR
+        L1[Data Flow] --- L2[Real-time Connection] --- L3[Storage Access] --- L4[Service Call]
+    end
+    
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef backend fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef realtime fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef ai fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    classDef legend fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px
+    
+    class UA1,UA2,UA3,UA4,UB1,UB2,UB3,UB4 client
+    class WS1,API1 backend
+    class Redis realtime
+    class MongoDB,Cloudinary,KeyRegistry storage
+    class AI1 ai
+    class L1,L2,L3,L4 legend
 ```
 
 ---
@@ -124,24 +229,14 @@ graph TD
 
 ---
 
-## 📸 Screenshots
 
-| Login Page | Chat Interface | AI Assistant |
-| :---: | :---: | :---: |
-| ![Login](https://via.placeholder.com/300x200?text=Login+UI) | ![Chat](https://via.placeholder.com/300x200?text=Chat+UI) | ![AI](https://via.placeholder.com/300x200?text=AI+Assistant) |
 
-*(Replace with actual screenshots of your application)*
-
----
 
 ## 💎 Project Rationale
 
-*"TeamSync isn't just a chat app; it's a secure, AI-augmented infrastructure designed for the modern era of privacy. I chose a distributed architecture (Redis/Atlas) to ensure that as the user base grows, the system stays fast, and as privacy laws get stricter, the E2EE remains unbreakable."*
+*"Talkative isn't just a chat app; it's a secure, AI-augmented infrastructure designed for the modern era of privacy. I chose a distributed architecture (Redis/Atlas) to ensure that as the user base grows, the system stays fast, and as privacy laws get stricter, the E2EE remains unbreakable."*
 
 ---
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
-Built with ❤️ by [Your Name]
+Built with ❤️ by Prakhar
