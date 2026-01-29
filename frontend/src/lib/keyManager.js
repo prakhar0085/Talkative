@@ -30,17 +30,25 @@ export const generateKeyPair = async () => {
   }
 };
 
-// Store Private Key in localStorage (In production, use IndexedDB)
+// Store Keys in localStorage
 export const storePrivateKey = (privateKey) => {
   localStorage.setItem("chat_private_key", privateKey);
 };
 
-// Retrieve Private Key
+export const storePublicKey = (publicKey) => {
+  localStorage.setItem("chat_public_key", publicKey);
+};
+
+// Retrieve Keys
 export const getPrivateKey = () => {
   return localStorage.getItem("chat_private_key");
 };
 
+export const getPublicKey = () => {
+  return localStorage.getItem("chat_public_key");
+};
+
 // Check if user has keys
 export const hasKeys = () => {
-  return !!localStorage.getItem("chat_private_key");
+  return !!localStorage.getItem("chat_private_key") && !!localStorage.getItem("chat_public_key");
 };

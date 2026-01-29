@@ -158,7 +158,7 @@ export const decryptMessage = async (privateKeyPem, encryptedJson) => {
     return dec.decode(decryptedBuffer);
 
   } catch (error) {
-    console.error("Decryption failed:", error);
+    console.error("Decryption failed detail:", error);
     return "🔒 Encrypted Message (Decryption Failed)";
   }
 };

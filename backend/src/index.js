@@ -1,6 +1,18 @@
 //Global import
 import express from "express";
 import dotenv from "dotenv";
+
+// Handle uncaught exceptions (like Redis ECONNRESET) to prevent server crash
+process.on('uncaughtException', (err) => {
+    if (err.code === 'ECONNRESET') {
+        // console.warn('⚠️ Network error caught (ECONNRESET). Preventing server crash.');
+        // Silently handle it to not spam the console
+    } else {
+        console.error('💥 Uncaught Exception:', err);
+        // Only exit if it's not a known transient network error
+        // process.exit(1);
+    }
+});
 import cookieparser from "cookie-parser";
 import cors from "cors";
 

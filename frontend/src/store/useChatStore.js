@@ -149,9 +149,12 @@ export const useChatStore = create((set, get) => ({
 
       // 1. If it's from the active chat, just add it to the UI
       if (selectedUser && newMessage.senderId === selectedUser._id) {
-        set({
-          messages: [...messages, messageWithText],
-        });
+        const isDuplicate = messages.some(m => m._id === messageWithText._id);
+        if (!isDuplicate) {
+            set({
+              messages: [...messages, messageWithText],
+            });
+        }
       } else {
         // Increment Unread Count
         set({
